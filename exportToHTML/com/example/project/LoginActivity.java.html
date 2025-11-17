@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>LoginActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+LoginActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">project</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">SuppressLint</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">method</span><span class="s2">.</span><span class="s1">HideReturnsTransformationMethod</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">method</span><span class="s2">.</span><span class="s1">PasswordTransformationMethod</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.*;</span>
+
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">firebase</span><span class="s2">.</span><span class="s1">auth</span><span class="s2">.</span><span class="s1">FirebaseAuth</span><span class="s2">;</span>
+
+
+<span class="s0">public class </span><span class="s1">LoginActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s2">{</span>
+
+    <span class="s0">private </span><span class="s1">EditText etEmail</span><span class="s2">, </span><span class="s1">etPassword</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">TextView tvError</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">ImageButton btnTogglePassword</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">isPasswordVisible </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth mAuth</span><span class="s2">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">Bundle savedInstanceState</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">);</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_login</span><span class="s2">);</span>
+
+        <span class="s1">etEmail </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">etUsername</span><span class="s2">);</span>
+        <span class="s1">etPassword </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">etPassword</span><span class="s2">);</span>
+        <span class="s1">tvError </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tvError</span><span class="s2">);</span>
+        <span class="s1">btnTogglePassword </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnTogglePassword</span><span class="s2">);</span>
+
+        <span class="s1">Button btnLogin </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnLogin</span><span class="s2">);</span>
+        <span class="s1">TextView tvForgotPassword </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tvForgotPassword</span><span class="s2">);</span>
+        <span class="s1">TextView tvRegister </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tvRegister</span><span class="s2">);</span>
+
+        <span class="s1">mAuth </span><span class="s2">= </span><span class="s1">FirebaseAuth</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">();</span>
+
+        <span class="s3">// Toggle password visibility</span>
+        <span class="s1">btnTogglePassword</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">isPasswordVisible</span><span class="s2">) {</span>
+                <span class="s1">etPassword</span><span class="s2">.</span><span class="s1">setTransformationMethod</span><span class="s2">(</span><span class="s1">PasswordTransformationMethod</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">());</span>
+                <span class="s1">btnTogglePassword</span><span class="s2">.</span><span class="s1">setImageResource</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_baseline_visibility_off_24</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">etPassword</span><span class="s2">.</span><span class="s1">setTransformationMethod</span><span class="s2">(</span><span class="s1">HideReturnsTransformationMethod</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">());</span>
+                <span class="s1">btnTogglePassword</span><span class="s2">.</span><span class="s1">setImageResource</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_baseline_visibility_24</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">isPasswordVisible </span><span class="s2">= !</span><span class="s1">isPasswordVisible</span><span class="s2">;</span>
+            <span class="s1">etPassword</span><span class="s2">.</span><span class="s1">setSelection</span><span class="s2">(</span><span class="s1">etPassword</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">length</span><span class="s2">());</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// Login logic</span>
+        <span class="s1">btnLogin</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; </span><span class="s2">{</span>
+            <span class="s1">String email </span><span class="s2">= </span><span class="s1">etEmail</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+            <span class="s1">String password </span><span class="s2">= </span><span class="s1">etPassword</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">email</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() || </span><span class="s1">password</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">tvError</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;Please fill in both email and password.&quot;</span><span class="s2">);</span>
+                <span class="s1">tvError</span><span class="s2">.</span><span class="s1">setVisibility</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span><span class="s2">);</span>
+                <span class="s0">return</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s1">tvError</span><span class="s2">.</span><span class="s1">setVisibility</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span><span class="s2">);</span>
+
+            <span class="s1">mAuth</span><span class="s2">.</span><span class="s1">signInWithEmailAndPassword</span><span class="s2">(</span><span class="s1">email</span><span class="s2">, </span><span class="s1">password</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">addOnCompleteListener</span><span class="s2">(</span><span class="s1">task -&gt; </span><span class="s2">{</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">task</span><span class="s2">.</span><span class="s1">isSuccessful</span><span class="s2">()) {</span>
+                            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Login Successful&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                            <span class="s1">Intent i </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s1">WaypointActivity</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+                            <span class="s1">i</span><span class="s2">.</span><span class="s1">putExtra</span><span class="s2">(</span><span class="s4">&quot;username&quot;</span><span class="s2">, </span><span class="s1">email</span><span class="s2">);</span>
+                            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">i</span><span class="s2">);</span>
+                            <span class="s1">finish</span><span class="s2">();</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">tvError</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;Authentication failed: &quot; </span><span class="s2">+ </span><span class="s1">task</span><span class="s2">.</span><span class="s1">getException</span><span class="s2">().</span><span class="s1">getMessage</span><span class="s2">());</span>
+                            <span class="s1">tvError</span><span class="s2">.</span><span class="s1">setVisibility</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span><span class="s2">);</span>
+                        <span class="s2">}</span>
+                    <span class="s2">});</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// Forgot password</span>
+        <span class="s1">tvForgotPassword</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; </span><span class="s2">{</span>
+            <span class="s1">String email </span><span class="s2">= </span><span class="s1">etEmail</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">email</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()){</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Enter email to reset password&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                <span class="s0">return</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+            <span class="s1">mAuth</span><span class="s2">.</span><span class="s1">sendPasswordResetEmail</span><span class="s2">(</span><span class="s1">email</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">addOnCompleteListener</span><span class="s2">(</span><span class="s1">task -&gt; </span><span class="s2">{</span>
+                        <span class="s0">if</span><span class="s2">(</span><span class="s1">task</span><span class="s2">.</span><span class="s1">isSuccessful</span><span class="s2">()){</span>
+                            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Reset Email Sent&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Error: &quot; </span><span class="s2">+ </span><span class="s1">task</span><span class="s2">.</span><span class="s1">getException</span><span class="s2">().</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                        <span class="s2">}</span>
+                    <span class="s2">});</span>
+        <span class="s2">});</span>
+
+        <span class="s3">// Navigate to register activity</span>
+        <span class="s1">tvRegister</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; </span><span class="s2">{</span>
+            <span class="s1">Intent i </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">LoginActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">, </span><span class="s1">RegisterActivity</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">i</span><span class="s2">);</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
