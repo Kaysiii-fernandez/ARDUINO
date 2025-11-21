@@ -7,10 +7,11 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.widget.*;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -21,6 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // Toggle password visibility
+        // password visibility
         btnTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -50,13 +52,17 @@ public class LoginActivity extends AppCompatActivity {
             etPassword.setSelection(etPassword.getText().length());
         });
 
-        // Login logic
+        // Login
         btnLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            if (email.isEmpty() || password.isEmpty()) {
-                tvError.setText("Please fill in both email and password.");
+            if (email.isEmpty()) {
+                tvError.setText("Please fill out the email.");
+                tvError.setVisibility(android.view.View.VISIBLE);
+                return;
+            } else if (password.isEmpty()) {
+                tvError.setText("Please fill out the password.");
                 tvError.setVisibility(android.view.View.VISIBLE);
                 return;
             }
@@ -72,13 +78,13 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         } else {
-                            tvError.setText("Authentication failed: " + task.getException().getMessage());
+                            tvError.setText("Authentication failed: " + Objects.requireNonNull(task.getException()).getMessage());
                             tvError.setVisibility(android.view.View.VISIBLE);
                         }
                     });
         });
 
-        // Forgot password
+
         tvForgotPassword.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             if(email.isEmpty()){
@@ -91,15 +97,16 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(LoginActivity.this, "Reset Email Sent", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        // Navigate to register activity
+
         tvRegister.setOnClickListener(v -> {
             Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(i);
         });
     }
 }
+
