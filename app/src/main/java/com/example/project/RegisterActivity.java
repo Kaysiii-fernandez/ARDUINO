@@ -17,7 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etEmail, etPassword, etConfirmPassword;
-    private Button btnCreateAccount, btnFacebook, btnGoogle;
+    private Button btnGoogle;
     private ImageView btnTogglePassword, btnToggleConfirmPassword;
 
     private FirebaseAuth mAuth;
@@ -39,8 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        btnFacebook = findViewById(R.id.btnfacebook);
+        Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        Button btnFacebook = findViewById(R.id.btnfacebook);
         btnGoogle = findViewById(R.id.btngoogle);
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         btnToggleConfirmPassword = findViewById(R.id.btnToggleConfirmPassword);
@@ -108,5 +108,10 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private class User {
+        public User(String s, String email) {
+        }
     }
 }
