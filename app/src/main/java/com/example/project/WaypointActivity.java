@@ -18,7 +18,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.ValueEventListener;
 
 public class WaypointActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -27,33 +26,34 @@ public class WaypointActivity extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waypoint);
 
-        // Welcome TextView
+
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView tvWelcome = findViewById(R.id.tvWelcome);
-        String username = getIntent().getStringExtra("username");
+        String username = getIntent().getStringExtra("Donny Pangilinan");
         tvWelcome.setText("Welcome, " + username);
 
-        // Initialize fused location provider
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Set up the map fragment
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
 
-        // Set up the center button
+
         FloatingActionButton btnCenter = findViewById(R.id.btn_center);
         btnCenter.setOnClickListener(v -> getDeviceLocation());
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
         // Enable My Location layer if permissions are granted
@@ -70,7 +70,7 @@ public class WaypointActivity extends AppCompatActivity implements OnMapReadyCal
         getDeviceLocation();
     }
 
-    // Handle permission request response
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -116,8 +116,5 @@ public class WaypointActivity extends AppCompatActivity implements OnMapReadyCal
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void addValueEventListener(ValueEventListener valueEventListener) {
     }
 }
